@@ -26,12 +26,20 @@ router.get('/:id', (req, res) => {
     where: {
       id: req.params.id
     },
-    include: {
-      model: Product,
-      attributes: ['product_name', 'price', 'stock', 'category_id']
-    }
+    include: [
+      {
+        model: Product,
+        attributes: ['id', 'product_name', 'price', 'stock', 'category_id'],
+      }
+    ]
   })
-    .then(data => res.json(data))
+    .then(data => {
+      if (!data) {
+        res.status(404).json({ message: 'No tag with this id!' });
+        return;
+      }
+      res.json(data);
+    })
     .catch(err => {
       console.log(err);
       res.status(500).json(err);
